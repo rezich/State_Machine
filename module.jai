@@ -38,6 +38,15 @@ define :: (
         array_add(*sm.states, it);
     }
 }
+define :: (
+    using sm: *State_Machine_Definition,
+    state_definitions: ..State_Machine_Definition.State_Definition
+) {
+    for state_definitions {
+        if it.name != "" then table_add(*sm.state_names, it.name, sm.states.count);
+        array_add(*sm.states, it);
+    }
+}
 
 init :: (smd: *State_Machine_Definition, sm_data: *void = null) -> State_Machine {
     assert(smd.states.count > 0);
@@ -149,9 +158,10 @@ set_next :: (using sm: *State_Machine, state_index: int) {
             }
         }, .{"penultimate",
             null,
-            (state: *State) {
+            (state: *State, dt: float) -> bool {
                 log("let's just show that you don't need an on_start");
                 sleep_milliseconds(250);
+                return true;
             },
             null
         }, .{"last",
